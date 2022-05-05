@@ -52,7 +52,7 @@
 ## GPU 线程束warp 
 
 
-![student work 03](../Image/2.png)
+![student work 05](../Image/2.png)
 
 
 GPU控制单元与计算单元是如何结合的，warp线程束是如何在软件和硬件端被执行的，为什么说线程束是执行核函数的最基本单元
@@ -70,9 +70,9 @@ GPU控制单元与计算单元是如何结合的，warp线程束是如何在软�
 ![student work 04](../Image/1.png)
 
 
+ 2D grid of 3D blocks
 
-// 2D grid of 3D blocks
-
+```
 __device__ int getGlobalIdx_2D_3D() {
 
   int blockId = blockIdx.x + blockIdx.y * gridDim.x;
@@ -84,9 +84,15 @@ __device__ int getGlobalIdx_2D_3D() {
       (threadIdx.y * blockDim.x) + threadIdx.x;
 
   return threadId;
-
 }
-
+```
 
 block (1,1)
 thread (3,0,0)
+
+![student work 06](../Image/3.png)
+
+
+blockid = 3
+
+threadid = 3*(4*2*2) + 3 = 51

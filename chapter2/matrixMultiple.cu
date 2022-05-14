@@ -7,11 +7,11 @@
 #include "device_launch_parameters.h"
 #include "cublas_v2.h"
 
-#define M 512
-#define K 512
-#define N 512
+#define M 64
+#define K 64
+#define N 64
 
-#define BLOCK_SIZE 32  //block size ,each thread to calucate each bloc
+#define BLOCK_SIZE 8  //block size ,each thread to calucate each bloc
 
 void initial(float *array, int size)
 {

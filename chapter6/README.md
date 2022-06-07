@@ -37,4 +37,13 @@ Dynamic shape Plugin API
 
 1. `getPluginRegistry()->registerCreator(*mCreator, libNamespace);`
 
-2. `how to debug plugin in TensorRT`
+
+# How to debug plugin in TensorRT
+
+TRT是闭源软件，API相对比较复杂。
+
+1. 无论是使用API还是parser构建网络，模型转换完后，结果误差很大，怎么办？
+
+2. 增加了自定义plugin 实现算子合并，结果对不上，怎么办？
+
+3. 使用FP16 or INT8优化策略后，算法精确度掉了很多，怎么办？

@@ -32,3 +32,9 @@ Getserializationsize()
 3. const char* getPluginType() const
 
 4. const char* getPluginVersion() const;
+
+Dynamic shape Plugin API
+
+1. `getPluginRegistry()->registerCreator(*mCreator, libNamespace);`
+
+2. `how to debug plugin in TensorRT`

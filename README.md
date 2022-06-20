@@ -58,3 +58,6 @@
 - Section 2: TRT INT8 quantization algorithm
 - Section 3: TRT large-scale launch experience
 
+
+<img width="1040" alt="7f9d8e2968eaccd933679d3d73039e3" src="https://user-images.githubusercontent.com/38579506/174629645-a19acf9d-3797-44ab-a6a5-1636edbbf46d.png">
+

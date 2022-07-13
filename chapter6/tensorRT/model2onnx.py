@@ -4,12 +4,12 @@ import numpy as np
 import os
 from transformers import BertTokenizer, BertForMaskedLM
 
-# import onnxruntime as ort
+import onnxruntime as ort
 import transformers
 
 print("pytorch:", torch.__version__)
-# print("onnxruntime version:", ort.__version__)
-# print("onnxruntime device:", ort.get_device())
+print("onnxruntime version:", ort.__version__)
+print("onnxruntime device:", ort.get_device())
 print("transformers:", transformers.__version__)
 
 BERT_PATH = 'bert-base-uncased'

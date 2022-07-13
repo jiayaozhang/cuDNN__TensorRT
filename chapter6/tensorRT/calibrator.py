@@ -42,6 +42,15 @@ class BertCalibrator(trt.IInt8LegacyCalibrator):
         self.position_ids_list = []
         
         # TODO: your code, read inputs
+        with open("calibrator_data.txt", "r") as f:
+                    lines = f.readlines()
+                    for i in range(0, num_inputs):
+                        inputs = text2inputs(tokenizer, lines[i])
+                        self.input_ids_list.append(inputs[0])
+                        self.token_type_ids_list.append(inputs[1])
+                        self.position_ids_list.append(inputs[2])
+                        if i % 10 == 0:
+                            print("text2inputs:" + lines[i])
 
         self.cache_file = cache_file
 
@@ -58,6 +67,30 @@ class BertCalibrator(trt.IInt8LegacyCalibrator):
 
         # Allocate enough memory for a whole batch.
         self.device_inputs = [cuda.mem_alloc(self.max_seq_length * trt.int32.itemsize * self.batch_size) for binding in range(3)]
+
+    def text2inputs(tokenizer, text):
+        encoded_input = tokenizer.encode_plus(text, return_tensors = "pt")
+
+        input_ids = encoded_input['input_ids'].int().detach().numpy()
+        token_type_ids = encoded_input['token_type_ids'].int().detach().numpy()
+
+        # position_ids = torch.arange(0, encoded_input['input_ids'].shape[1]).int().view(1,-1).numpy()
+        seq_len = encoded_input['input_ids'].shape[1]
+        position_ids = np.arange(seq_len, dtype = np.int32).reshape(1, -1)
+        input_list = [input_ids, token_type_ids, position_ids]
+
+        return input_list
+
+    # # TODO: your code, read inputs
+    # with open("calibrator_data.txt", "r") as f:
+    #             lines = f.readlines()
+    #             for i in range(0, 100):
+    #                 inputs = text2inputs(tokenizer, lines[i])
+    #                 self.input_ids_list.append(inputs[0])
+    #                 self.token_type_ids_list.append(inputs[1])
+    #                 self.position_ids_list.append(inputs[2])
+    #                 if i % 10 == 0:
+    #                     print("text2inputs:" + lines[i])
 
     def free(self):
         for dinput in self.device_inputs:
@@ -79,7 +112,24 @@ class BertCalibrator(trt.IInt8LegacyCalibrator):
             print("Calibrating batch {:}, containing {:} sentences".format(current_batch, self.batch_size))
 
         # TODO your code, copy input from cpu to gpu
+            input_ids = self.input_ids_list[self.current_index]
+            token_type_ids = self.token_type_ids_list[self.current_index]
+            position_ids = self.position_ids_list[self.current_index]
 
+            seq_len = input_ids.shape[1]
+            if seq_len > self.max_seq_length:
+                print(seq_len)
+                print(input_ids.shape)
+                input_ids = input_ids[:, :self.max_seq_length]
+                token_type_ids = token_type_ids[:, :self.max_seq_length]
+                position_ids = position_ids[:, :self.max_seq_length]
+                print(input_ids.shape)
+
+            cuda.memcpy_htod(self.device_inputs[0], input_ids.ravel())
+            cuda.memcpy_htod(self.device_inputs[1], token_type_ids.ravel())
+            cuda.memcpy_htod(self.device_inputs[2], position_ids.ravel())
+
+            self.current_index += self.batch_size
         return self.device_inputs
 
     def read_calibration_cache(self):

@@ -10,7 +10,7 @@ import numpy as np
 import os
 from transformers import BertTokenizer, BertForMaskedLM
 
-# import onnxruntime as ort
+import onnxruntime as ort
 import transformers
 
 from trt_helper import *
